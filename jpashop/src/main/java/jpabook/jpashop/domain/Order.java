@@ -15,7 +15,7 @@ import static javax.persistence.FetchType.*;
 @Entity
 @Table(name = "oreders")
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 직접 생성하지말고 생성 메서드 사용하라는 뜻
 public class Order {
 
     @Id @GeneratedValue
@@ -26,6 +26,8 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    // CascadeType.ALL -> order 가 persist 될 때 이 부분도 다 persist 해줌 (막쓰면 안됨)
+    // --> 중요한 엔티티라면 별도의 리포지토리 생성해서 persist 해줘야함
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
@@ -66,5 +68,34 @@ public class Order {
         return order;
     }
 
+    //==비즈니스 로직==//
+    /**
+     * 주문 취소
+     */
+    public void cancel(){
+        if (delivery.getStatus() == DeliveryStatus.COMP){
+            throw new IllegalStateException("이미 배송이 완료된 상품은 취소할 수 없습니다");
+        }
+        this.setStatus(OrderStatus.CANCEL);
+        for (OrderItem orderItem: orderItems){
+            orderItem.cancel();
+        }
+    }
 
+    //==조회 로직==//
+    /**
+     * 전체 주문 가격 조회
+     */
+
+    public int getTotal(){
+        int totalPrice=0;
+        for (OrderItem orderItem: orderItems) {
+            totalPrice+=orderItem.getTotalPrice();
+        }
+        return totalPrice;
+
+        // 같은 문법
+        // int totalPrice= orderItems.stream().mapToInt(OrderItem::getTotalPrice).sum();
+        // return totalPrice;
+    }
 }
