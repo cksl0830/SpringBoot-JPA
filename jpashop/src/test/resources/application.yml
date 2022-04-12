@@ -1,0 +1,21 @@
+# 다없어도 가능 / 테스트환경이랑 메인이랑 분리해서 사용
+
+spring:
+#  datasource:
+#    url: jdbc:h2:mem:testdb
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        format_sql: true
+#    open-in-view: false
+
+logging.level:
+  org.hibernate.SQL: debug
+#  org.hibernate.type: trace
