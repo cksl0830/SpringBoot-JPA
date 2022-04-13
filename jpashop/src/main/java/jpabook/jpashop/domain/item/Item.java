@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) //하나의 테이블에 전부 넣겠다
-@DiscriminatorColumn(name = "dtype")
+@DiscriminatorColumn(name = "dtype") //부모 클래스에 선언 (상속받기 위해 하위 클래스 구분)
 public abstract class Item {
 
     @Id @GeneratedValue
