@@ -22,21 +22,22 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY) // 지연로딩
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL) // 배송 정보까지 같이 넘길 수 있도록 all 사용
+    @JoinColumn(name ="delivery_id")
+    private Delivery delivery;
 
     // CascadeType.ALL -> order 가 persist 될 때 이 부분도 다 persist 해줌 (막쓰면 안됨)
     // --> 중요한 엔티티라면 별도의 리포지토리 생성해서 persist 해줘야함
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name ="delivery_id")
-    private Delivery delivery;
-
     private LocalDateTime orderDate; // 주문시간
 
+    @Enumerated(EnumType.STRING)
     private OrderStatus status; // 주문상태 [ORDER, CANCEL]
 
     //==연관관계 메서드==//
